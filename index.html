@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Undangan Untuk Risla</title>
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      background: linear-gradient(to bottom right, #0f0f0f, #1a1a1a);
+      color: white;
+      overflow: hidden;
+    }
+    .page {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      transition: opacity 1s ease;
+    }
+    .active {
+      display: flex;
+    }
+    button {
+      margin-top: 2rem;
+      padding: 0.8rem 2rem;
+      background: #e91e63;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #c2185b;
+    }
+    .hidden {
+      display: none;
+    }
+    #fireworks {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="page active" id="page1">
+    <div>
+      <h2>Untuk: Risla Amanda Putri</h2>
+      <p style="margin-top: 1rem; font-size: 1.2rem;">Ada sesuatu yang ingin aku tunjukkan...</p>
+      <button onclick="nextPage()">Lanjutkan</button>
+    </div>
+  </div>
+
+  <div class="page" id="page2">
+    <div>
+      <p style="font-size: 1.2rem;">Ada hal yang nggak bisa aku ungkapkan lewat pesan...</p>
+      <p style="margin-top: 1rem;">Bisakah kamu bertemu denganku di tempat ini?</p>
+      <button onclick="revealLocation()">Lihat Lokasinya</button>
+      <p id="lokasi" class="hidden" style="margin-top: 2rem; font-weight: bold;">
+        <strong>Secret</strong><br>
+        Sabtu, 12 April - Jam 13.00<br>
+        <a href="https://maps.app.goo.gl/yVmx8vEW39kQFCRn6" target="_blank" style="color: #ff4081; text-decoration: underline;">
+          Lihat di Google Maps
+        </a>
+      </p>
+            <button class="hidden" id="nextBtn" onclick="nextPage()">Lanjut</button>
+    </div>
+  </div>
+
+  <div class="page" id="page3">
+    <div>
+      <p style="font-size: 1.2rem;">Kalau kamu siap melangkah, cukup katakan "ya"...</p>
+      <button onclick="showMessage()">Aku akan datang</button>
+      <p id="pesanTerakhir" class="hidden" style="margin-top: 2rem; font-size: 1.2rem;">Terima kasih udah mau jadi bagian dari cerita ini. Aku tunggu, Risla.</p>
+    </div>
+  </div>
+
+  <canvas id="fireworks"></canvas>
+
+  <script>
+    let currentPage = 1;
+    function nextPage() {
+      document.getElementById(`page${currentPage}`).classList.remove('active');
+      currentPage++;
+      document.getElementById(`page${currentPage}`).classList.add('active');
+    }
+
+    function revealLocation() {
+      document.getElementById('lokasi').classList.remove('hidden');
+      document.getElementById('nextBtn').classList.remove('hidden');
+    }
+
+    function showMessage() {
+      document.getElementById('pesanTerakhir').classList.remove('hidden');
+      startFireworks();
+    }
+
+    // Fireworks animation (simple effect)
+    function startFireworks() {
+      const canvas = document.getElementById('fireworks');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      let particles = [];
+      setInterval(() => {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 3 + 2,
+          dx: (Math.random() - 0.5) * 4,
+          dy: (Math.random() - 0.5) * 4,
+          alpha: 1
+        });
+      }, 100);
+
+      function animate() {
+        ctx.fillStyle = 'rgba(0,0,0,0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, i) => {
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 99, 132, ${p.alpha})`;
+          ctx.fill();
+          p.x += p.dx;
+          p.y += p.dy;
+          p.alpha -= 0.01;
+          if (p.alpha <= 0) particles.splice(i, 1);
+        });
+        requestAnimationFrame(animate);
+      }
+      animate();
+    }
+  </script>
+</body>
+</html>
